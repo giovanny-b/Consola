@@ -43,7 +43,7 @@ public class ConsolaP {
 
     private static String Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         Limpiar();
 
@@ -55,7 +55,7 @@ public class ConsolaP {
                 case "cd":
 
                     cd();
-                    
+
                     break;
                 case "System":
 
@@ -78,6 +78,16 @@ public class ConsolaP {
                     TotalPath();
 
                     break;
+                case "delete":
+                    
+                    Delete();
+                    
+                    break;
+                case "create":
+                    
+                    Create();
+                    
+                    break;
             }
 
         } while (!comand.equalsIgnoreCase("Exit"));
@@ -92,8 +102,19 @@ public class ConsolaP {
      * @param Limpiar limpia la consola.
      */
     private static void Limpiar() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        if (Kernel.equalsIgnoreCase("linux")) {
+            
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+
+        }else{
+            try {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } catch (Exception e) {
+                /*No hacer nada*/
+            }
+        }
+
     }
 
     /**
@@ -140,7 +161,6 @@ public class ConsolaP {
      *
      * @param System Muestra especificaciones del sistema
      */
-    
     private static void System() {
         String system = scan.next();
 
@@ -166,13 +186,12 @@ public class ConsolaP {
                 break;
         }
     }
-    
+
     /**
      * accede a rutas del disco o carpetas por medio de url
      *
      * @param cd accede a rutas del disco o carpetas
      */
-
     private static void cd() {
         String ComandUrl = scan.next();
 
@@ -224,6 +243,150 @@ public class ConsolaP {
             }
 
         }
+    }
+    
+    private static void Delete(){
+        String borrar = scan.next();
+        
+        path = new File(borrar);
+        
+        if (path.delete()) {
+            System.out.println(rojo + "Se a eliminado el archivo " + blanco + path.getName());
+        }else{
+            System.out.println("¡Error!");
+        }
+        
+        path = new File(url);
+        
+    }
+    
+    private static void Create() throws IOException{
+        String Tipo = scan.next();
+        String nombre = scan.next();
+        
+        if (Tipo.equalsIgnoreCase("w")) {
+            path = new File(nombre + ".docx");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+            
+        }else if(Tipo.equalsIgnoreCase("t")){
+            path = new File(nombre + ".txt");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("p")){
+            path = new File(nombre + ".pdf");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("hc")){
+            path = new File(nombre + ".xlsx");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("pp")){
+            path = new File(nombre + ".pptx");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("jc")){
+            path = new File(nombre + ".java");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("pf")){
+            path = new File(nombre + ".py");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("cpp")){
+            path = new File(nombre + ".cpp");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("cpph")){
+            path = new File(nombre + ".h");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("wh")){
+            path = new File(nombre + ".html");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else if(Tipo.equalsIgnoreCase("php")){
+            path = new File(nombre + ".php");
+            
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            }else{
+                System.out.println(rojo + "El archivo ya existe");
+            }
+            
+            path = new File(url);
+        }else  if(Tipo.equalsIgnoreCase("fold")){
+            path = new File(nombre);
+            
+            if (path.mkdir()) {
+                System.out.println(cyan + "se a creado la carpeta " + path.getName());
+            }else{
+                System.out.println(rojo + "La carpeta ya existe");
+            }
+            
+            path = new File(url);
+        }
+        
     }
 
 }
