@@ -1,31 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Class;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 /**
+ * Esta es la clase principal.
  *
  * @author giovannyb
+ * @version 14/01/21/A
  */
 public class ConsolaP {
 
     //----------Colores---------
-    private static String negro = "\u001B[30m";
-    private static String rojo = "\u001B[31m";
-    private static String verde = "\u001B[32m";
-    private static String amarillo = "\u001B[33m";
-    private static String azul = "\u001B[34m";
-    private static String morado = "\u001B[35m";
-    private static String cyan = "\u001B[36m";
-    private static String blanco = "\u001B[37m";
+    public static String negro = "\u001B[30m";
+    public static String rojo = "\u001B[31m";
+    public static String verde = "\u001B[32m";
+    public static String amarillo = "\u001B[33m";
+    public static String azul = "\u001B[34m";
+    public static String morado = "\u001B[35m";
+    public static String cyan = "\u001B[36m";
+    public static String blanco = "\u001B[37m";
 
     private static String NameEq = System.getProperty("user.name");
     private static String Kernel = System.getProperty("os.name");
@@ -50,8 +45,7 @@ public class ConsolaP {
 
     public static void main(String[] args) {
 
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        Limpiar();
 
         do {
             System.out.print(Console);
@@ -59,120 +53,177 @@ public class ConsolaP {
 
             switch (comand) {
                 case "cd":
-                    String ComandUrl = scan.next();
 
-                    path = new File(ComandUrl);
-
-                    if (ComandUrl.startsWith("/home/")) {
-                        if (path.exists()) {
-                            url = ComandUrl;
-                            path = new File(url);
-                            Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
-                        } else {
-                            System.out.println(rojo + "¡El directorio no existe!");
-                            path = new File(url);
-                        }
-                    } else if (ComandUrl.equals("../")) {
-
-                        String pathI = "";
-                        String pathUrl = "";
-                        String pathT = "";
-
-                        for (int x = url.length() - 1; x >= 0; x--) {
-                            pathI = pathI + url.charAt(x);
-                        }
-
-                        String pathEnd = pathI.substring(1, pathI.length());
-
-                        int locali = pathEnd.indexOf(sep);
-                        int ultChar = pathEnd.length();
-
-                        pathT = pathEnd.substring(locali, ultChar);
-
-                        for (int x = pathT.length() - 1; x >= 0; x--) {
-                            pathUrl = pathUrl + pathT.charAt(x);
-                        }
-
-                        url = pathUrl;
-                        path = new File(url);
-                        Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
-
-                        break;
-                    } else {
-
-                        if (path.exists()) {
-                            url = url + ComandUrl;
-                            path = new File(url);
-                            Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
-                        }else{
-                            System.out.println(rojo + "¡La carpeta no existe!");
-                            path = new File(url);
-                        }
-
-                    }
+                    cd();
+                    
                     break;
                 case "System":
-                    String system = scan.next();
 
-                    switch (system) {
-                        case "kernel":
+                    System();
 
-                            System.out.println(verde + "Kernel: " + blanco + arch + " " + Kernel + " " + VKR);
-
-                            break;
-                        case "java":
-
-                            String ComandJava = scan.next();
-
-                            switch (ComandJava) {
-                                case "path":
-                                    System.out.println(verde + "Java path: " + blanco + java);
-                                    break;
-                                case "version":
-                                    System.out.println(verde + "Java version: " + blanco + javaV);
-                                    break;
-                            }
-
-                            break;
-                    }
                     break;
                 case "dir":
 
-                    String[] listado = path.list();
-                    if (listado == null || listado.length == 0) {
-                        System.out.println(rojo + "Carpeta vacia");
-                        return;
-                    } else {
-                        for (int i = 0; i < listado.length; i++) {
-                            System.out.println(listado[i]);
-                        }
-                    }
+                    dir();
 
                     break;
 
                 case "clear":
-                    System.out.print("\033[H\033[2J");
-                    System.out.flush();
+
+                    Limpiar();
 
                     break;
                 case "tp":
 
-                    if (active) {
-                        Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
-                        active = !active;
-                    } else {
-                        Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + "~" + blanco + "$ ";
-                        active = !active;
-                    }
+                    TotalPath();
 
                     break;
             }
 
         } while (!comand.equalsIgnoreCase("Exit"));
 
+        Limpiar();
+
+    }
+
+    /**
+     * Metodo para limpiar la consola
+     *
+     * @param Limpiar limpia la consola.
+     */
+    private static void Limpiar() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
 
+    /**
+     * muestra el path completo de la localizacion actual.
+     *
+     * @param TotalPath activa o desactiva el path actual.
+     */
+    private static void TotalPath() {
+        if (active) {
+            Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
+            active = !active;
+        } else {
+            Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + "~" + blanco + "$ ";
+            active = !active;
+        }
+    }
+
+    /**
+     * Muestra los archivos de la localizacion actual.
+     *
+     * @param dir Muestra los archivos de la carpeta accedida.
+     */
+    private static void dir() {
+        File[] archivos = path.listFiles();
+        if (archivos == null || archivos.length == 0) {
+            System.out.println("No hay elementos dentro de la carpeta actual");
+            return;
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            for (int i = 0; i < archivos.length; i++) {
+                File archivo = archivos[i];
+                System.out.println(String.format(cyan + "%s" + blanco + "(%s)" + rojo + " - %d *bytes*" + morado + " - %s",
+                        archivo.getName(),
+                        archivo.isDirectory() ? "Carpeta" : "Archivo",
+                        archivo.length(),
+                        sdf.format(archivo.lastModified())
+                ));
+            }
+        }
+    }
+
+    /**
+     * Muestra especificaciones del sistema con los comando especificos
+     *
+     * @param System Muestra especificaciones del sistema
+     */
+    
+    private static void System() {
+        String system = scan.next();
+
+        switch (system) {
+            case "kernel":
+
+                System.out.println(verde + "Kernel: " + blanco + arch + " " + Kernel + " " + VKR);
+
+                break;
+            case "java":
+
+                String ComandJava = scan.next();
+
+                switch (ComandJava) {
+                    case "path":
+                        System.out.println(verde + "Java path: " + blanco + java);
+                        break;
+                    case "version":
+                        System.out.println(verde + "Java version: " + blanco + javaV);
+                        break;
+                }
+
+                break;
+        }
+    }
+    
+    /**
+     * accede a rutas del disco o carpetas por medio de url
+     *
+     * @param cd accede a rutas del disco o carpetas
+     */
+
+    private static void cd() {
+        String ComandUrl = scan.next();
+
+        path = new File(ComandUrl);
+
+        if (ComandUrl.startsWith("/home/")) {
+            if (path.exists()) {
+                url = ComandUrl;
+                path = new File(url);
+                Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
+            } else {
+                System.out.println(rojo + "¡El directorio no existe!");
+                path = new File(url);
+            }
+        } else if (ComandUrl.equals("../")) {
+
+            String pathI = "";
+            String pathUrl = "";
+            String pathT = "";
+
+            for (int x = url.length() - 1; x >= 0; x--) {
+                pathI = pathI + url.charAt(x);
+            }
+
+            String pathEnd = pathI.substring(1, pathI.length());
+
+            int locali = pathEnd.indexOf(sep);
+            int ultChar = pathEnd.length();
+
+            pathT = pathEnd.substring(locali, ultChar);
+
+            for (int x = pathT.length() - 1; x >= 0; x--) {
+                pathUrl = pathUrl + pathT.charAt(x);
+            }
+
+            url = pathUrl;
+            path = new File(url);
+            Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
+
+        } else {
+
+            if (path.exists()) {
+                url = url + ComandUrl;
+                path = new File(url);
+                Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
+            } else {
+                System.out.println(rojo + "¡La carpeta no existe!");
+                path = new File(url);
+            }
+
+        }
     }
 
 }
