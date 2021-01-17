@@ -1,6 +1,7 @@
 package Class;
 
 import java.io.*;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
@@ -21,6 +22,13 @@ public class ConsolaP {
     public static String morado = "\u001B[35m";
     public static String cyan = "\u001B[36m";
     public static String blanco = "\u001B[37m";
+
+    /*----Base de datos----*/
+    public static String host = "localhost";
+    public static String user = "GiovannyBernal";
+    public static String pass = "1096539141";
+    public static String BD = "";
+    public static String URLcon = "jdbc:mysql://localhost:3306/Prueba1";
 
     private static String NameEq = System.getProperty("user.name");
     private static String Kernel = System.getProperty("os.name");
@@ -43,9 +51,13 @@ public class ConsolaP {
 
     private static String Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
 
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) throws IOException, InterruptedException, SQLException {
+        
         Limpiar();
+
+        Obtener();
+
+        Equipo();
 
         do {
             System.out.print(Console);
@@ -57,7 +69,7 @@ public class ConsolaP {
                     cd();
 
                     break;
-                case "System":
+                case "system":
 
                     System();
 
@@ -79,13 +91,43 @@ public class ConsolaP {
 
                     break;
                 case "delete":
-                    
+
                     Delete();
-                    
+
                     break;
                 case "create":
-                    
+
                     Create();
+
+                    break;
+
+                case "git":
+                    String command = scan.next();
+
+                    if (command.equals("clone")) {
+                        String url = scan.next();
+
+                        String comando = command + " " + url;
+
+                        Process proc = Runtime.getRuntime().exec("git " + comando);
+
+                        // Read the output
+                        BufferedReader reader
+                                = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            System.out.print(line + "\n");
+                        }
+
+                        proc.waitFor();
+
+                    }
+
+                    break;
+                case "createdb":
+                    
+                    
                     
                     break;
             }
@@ -103,11 +145,11 @@ public class ConsolaP {
      */
     private static void Limpiar() {
         if (Kernel.equalsIgnoreCase("linux")) {
-            
+
             System.out.print("\033[H\033[2J");
             System.out.flush();
 
-        }else{
+        } else {
             try {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } catch (Exception e) {
@@ -244,148 +286,212 @@ public class ConsolaP {
 
         }
     }
-    
-    private static void Delete(){
+
+    /**
+     * Elimina una carpeta o archivo seleccionado
+     *
+     * @param Delete Elimina carpetas o archivos
+     *
+     */
+    private static void Delete() {
         String borrar = scan.next();
-        
+
         path = new File(borrar);
-        
+
         if (path.delete()) {
             System.out.println(rojo + "Se a eliminado el archivo " + blanco + path.getName());
-        }else{
+        } else {
             System.out.println("¡Error!");
         }
-        
+
         path = new File(url);
-        
+
     }
-    
-    private static void Create() throws IOException{
+
+    /**
+     * crea archivos con plantillas diseñadas y editables. y carpetas
+     *
+     * @param Create crea archivos y carpetas
+     *
+     */
+    private static void Create() throws IOException {
         String Tipo = scan.next();
         String nombre = scan.next();
-        
+
         if (Tipo.equalsIgnoreCase("w")) {
             path = new File(nombre + ".docx");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-            
-        }else if(Tipo.equalsIgnoreCase("t")){
+
+        } else if (Tipo.equalsIgnoreCase("t")) {
             path = new File(nombre + ".txt");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("p")){
+        } else if (Tipo.equalsIgnoreCase("p")) {
             path = new File(nombre + ".pdf");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("hc")){
+        } else if (Tipo.equalsIgnoreCase("hc")) {
             path = new File(nombre + ".xlsx");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("pp")){
+        } else if (Tipo.equalsIgnoreCase("pp")) {
             path = new File(nombre + ".pptx");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("jc")){
+        } else if (Tipo.equalsIgnoreCase("jc")) {
             path = new File(nombre + ".java");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("pf")){
+        } else if (Tipo.equalsIgnoreCase("pf")) {
             path = new File(nombre + ".py");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("cpp")){
+        } else if (Tipo.equalsIgnoreCase("cpp")) {
             path = new File(nombre + ".cpp");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("cpph")){
+        } else if (Tipo.equalsIgnoreCase("cpph")) {
             path = new File(nombre + ".h");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("wh")){
+        } else if (Tipo.equalsIgnoreCase("wh")) {
             path = new File(nombre + ".html");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else if(Tipo.equalsIgnoreCase("php")){
+        } else if (Tipo.equalsIgnoreCase("php")) {
             path = new File(nombre + ".php");
-            
+
             if (path.createNewFile()) {
                 System.out.println(cyan + "se a creado el archivo " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "El archivo ya existe");
             }
-            
+
             path = new File(url);
-        }else  if(Tipo.equalsIgnoreCase("fold")){
+        } else if (Tipo.equalsIgnoreCase("cst")) {
+
             path = new File(nombre);
-            
+
+            if (path.createNewFile()) {
+                System.out.println(cyan + "se a creado el archivo " + path.getName());
+            } else {
+                System.out.println(rojo + "El archivo ya existe");
+            }
+
+            path = new File(url);
+        } else if (Tipo.equalsIgnoreCase("fold")) {
+            path = new File(nombre);
+
             if (path.mkdir()) {
                 System.out.println(cyan + "se a creado la carpeta " + path.getName());
-            }else{
+            } else {
                 System.out.println(rojo + "La carpeta ya existe");
             }
-            
+
             path = new File(url);
         }
+
+    }
+
+    private static void Equipo() throws IOException, InterruptedException {
+        String comando = "screenfetch";
+
+        Process proc = Runtime.getRuntime().exec(comando);
+
+        // Read the output
+        BufferedReader reader
+                = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+        String line = "";
+        while ((line = reader.readLine()) != null) {
+            System.out.print(line + "\n");
+        }
+
+        proc.waitFor();
+    }
+
+    public static void Obtener() throws SQLException {
+        
+        Connection con = DriverManager.getConnection(URLcon, user, pass);
+        
+        try ( PreparedStatement stmt = con.prepareStatement("SELECT * FROM clientes")) {
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                System.out.println(rs.getString("telefono"));
+            }
+
+        } catch (SQLException sqle) {
+            System.out.println("Error en la ejecución:"
+                    + sqle.getErrorCode() + " " + sqle.getMessage());
+        }
+
+    }
+    
+    public static void create() throws SQLException{
+        
+        
         
     }
 
