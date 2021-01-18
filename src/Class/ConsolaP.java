@@ -4,6 +4,8 @@ import java.io.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Esta es la clase principal.
@@ -22,13 +24,6 @@ public class ConsolaP {
     public static String morado = "\u001B[35m";
     public static String cyan = "\u001B[36m";
     public static String blanco = "\u001B[37m";
-
-    /*----Base de datos----*/
-    public static String host = "localhost";
-    public static String user = "GiovannyBernal";
-    public static String pass = "1096539141";
-    public static String BD = "";
-    public static String URLcon = "jdbc:mysql://localhost:3306/Prueba1";
 
     private static String NameEq = System.getProperty("user.name");
     private static String Kernel = System.getProperty("os.name");
@@ -50,14 +45,19 @@ public class ConsolaP {
     private static File path = new File(url);
 
     private static String Console = verde + NameEq + "@" + Kernel + blanco + ":" + cyan + path.getName() + blanco + "$ ";
+    
+    public static CrearDB c = new CrearDB();
+    public static String BD = "Console"; 
 
     public static void main(String[] args) throws IOException, InterruptedException, SQLException {
         
         Limpiar();
+        
+        Enviar();
 
         Obtener();
 
-        Equipo();
+        Equipo();        
 
         do {
             System.out.print(Console);
@@ -472,15 +472,26 @@ public class ConsolaP {
     }
 
     public static void Obtener() throws SQLException {
-        
-        Connection con = DriverManager.getConnection(URLcon, user, pass);
-        
-        try ( PreparedStatement stmt = con.prepareStatement("SELECT * FROM clientes")) {
+                
+        try {
+            
+            c.ConectarDB(BD);
+            
+            PreparedStatement stmt = c.conexion.prepareStatement("SELECT * FROM usuario");
+            
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                System.out.println(rs.getString("telefono"));
+                System.out.println(rojo + "-id      -userName     -osName     -osArch    -directorio");
+                System.out.print(cyan + rs.getString("id"));
+                System.out.print(blanco + "        " + rs.getString("userName"));
+                System.out.print(cyan +"    " + rs.getString("osName"));
+                System.out.print(blanco + "      " + rs.getString("osArch"));
+                System.out.println(cyan +"         " + rs.getString("directorio"));
+                System.out.println("");
             }
+            
+            c.DesconectarDB();
 
         } catch (SQLException sqle) {
             System.out.println("Error en la ejecución:"
@@ -489,9 +500,24 @@ public class ConsolaP {
 
     }
     
-    public static void create() throws SQLException{
+    public static void Enviar() throws SQLException{
         
-        
+        try {
+
+            c.ConectarDB(BD);
+            PreparedStatement stmt = c.conexion.prepareStatement("INSERT INTO usuario (userName, osName, osArch, directorio) VALUES (?, ?, ?, ?)");
+            
+            stmt.setString(1, NameEq);
+            stmt.setString(2, Kernel);
+            stmt.setString(3, arch);
+            stmt.setString(4, home);
+            
+            stmt.executeUpdate(); 
+          
+            c.DesconectarDB();
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 
